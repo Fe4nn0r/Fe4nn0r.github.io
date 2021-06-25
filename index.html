@@ -29,6 +29,14 @@
             ';end;',
         };
 
+        var a = document.createElement('a');
+        var linkText = document.createTextNode("Ouvrir l'application");
+        a.appendChild(linkText);
+        a.title = "Ouvrir l'application";
+        a.style="display:inline-block;padding: 6px 15px;background-color: #6DBB1A;border: 1px solid #6DBB1A;color: #FFF;text-decoration: none;";
+        a.href = url;
+        document.body.appendChild(a);
+
         var isMobile = {
           android: function () {
             return /Android/i.test(ua);
@@ -101,12 +109,5 @@
       };
       deepLink(options);
     </script>
-
-    <a
-      style="display:inline-block;padding: 6px 15px;background-color: #6DBB1A;border: 1px solid #6DBB1A;color: #FFF;text-decoration: none;"
-      href="timtle://oneHourBeforeVisit/08a08518-4223-4f4f-89ad-423fbe05abe2/123-123-123-123"
-    >
-      Ouvrir l'application
-    </a>
   </body>
 </html>
