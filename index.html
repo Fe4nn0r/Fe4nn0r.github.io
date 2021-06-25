@@ -1,8 +1,105 @@
-<script type="text/javascript">
-window.onload = function() {
-  window.location = 'timtle://oneHourBeforeVisit/08a08518-4223-4f4f-89ad-423fbe05abe2/123-123-123-123';
-}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>AppVitam</title>
+  </head>
 
-</script>
+  <body>
+    <script type="text/javascript" >
+          function deepLink(options) {
+        var url = options.url || '';
+        var androidPackageName = 'fr.intact.timtle';
+        var ua = window.navigator.userAgent;
 
-<a href="timtle://oneHourBeforeVisit/08a08518-4223-4f4f-89ad-423fbe05abe2/123-123-123-123">Ouvrir l'application</a>
+        // split the first :// from the url string
+        var split = url.split(/:\/\/(.+)/);
+        var scheme = split[0];
+        var path = split[1] || '';
+
+        var urls = {
+          deepLink: url,
+          android_intent:
+            'intent://' +
+            path +
+            '#Intent;scheme=' +
+            scheme +
+            ';package=' +
+            androidPackageName +
+            ';end;',
+        };
+
+        var isMobile = {
+          android: function () {
+            return /Android/i.test(ua);
+          },
+          ios: function () {
+            return /iPhone|iPad|iPod/i.test(ua);
+          },
+        };
+
+        if (isMobile.ios() && urls.deepLink ) {
+          iosLaunch();
+        } else if (isMobile.android() && androidPackageName) {
+          androidLaunch();
+        } else {
+          window.location = urls.deepLink;
+        }
+
+        function launchWekitApproach() {
+          document.location = urls.deepLink;
+          setTimeout(function () {
+            document.location = urls.deepLink;
+          }, 250);
+        }
+
+        function launchIframeApproach() {
+          var iframe = document.createElement('iframe');
+          iframe.style.border = 'none';
+          iframe.style.width = '1px';
+          iframe.style.height = '1px';
+          iframe.onload = function () {
+            document.location = urls.deepLink;
+          };
+          iframe.src = urls.deepLink;
+
+          window.onload = function () {
+            document.body.appendChild(iframe);
+
+            setTimeout(function () {
+              window.location = urls.deepLink;
+            }, 25);
+          };
+        }
+
+        function iosLaunch() {
+          // chrome and safari on ios >= 9 don't allow the iframe approach
+          if (
+            ua.match(/CriOS/) ||
+            (ua.match(/Safari/) && ua.match(/Version\/(9|10|11|12)/))
+          ) {
+            launchWekitApproach();
+          } else {
+            launchIframeApproach();
+          }
+        }
+
+        function androidLaunch() {
+          if (ua.match(/Chrome/)) {
+            document.location = urls.android_intent;
+          } else if (ua.match(/Firefox/)) {
+            launchWekitApproach();
+          } else {
+            launchIframeApproach();
+          }
+        }
+      }
+    </script>
+    <script type="text/javascript">
+      var options = {
+        url: "timtle://oneHourBeforeVisit/08a08518-4223-4f4f-89ad-423fbe05abe2/123-123-123-123",
+      };
+      deepLink(options);
+    </script>
+  </body>
+</html>
